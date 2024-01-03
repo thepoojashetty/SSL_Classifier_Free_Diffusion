@@ -1,5 +1,5 @@
 from torch.utils.data import Dataset,random_split
-from torchvision import datasets
+from torchvision import datasets,transforms
 import numpy as np
 
 np.random.seed(42)
@@ -10,11 +10,14 @@ class CifarDataset(Dataset):
         self.data_dir=data_dir
         self.train=train
         self.transform=transform
+        self.transform_unannotated = transforms.Compose([
+            transforms.RandomVerticalFlip(p=0.8)
+        ]) 
         self.p_uncond=p_uncond
-        self.data=datasets.CIFAR10(root=self.data_dir,train=self.train,transform=self.transform)
+        self.data=datasets.CIFAR10(root=self.data_dir,train=self.train,transform=transform)
         self.annotated,self.un_annotated=random_split(self.data,[int(0.4*len(self.data)),len(self.data)-int(len(self.data)*0.4)])
         self.annotated=iter(self.annotated)
-        self.un_annotated=iter([(data,10) for data,_ in iter(self.un_annotated)])
+        self.un_annotated=iter([(self.transform_unannotated(data),10) for data,_ in iter(self.un_annotated)])
 
     def __len__(self):
         return len(self.data)

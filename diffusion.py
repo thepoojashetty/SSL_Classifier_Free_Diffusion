@@ -73,7 +73,7 @@ class Diffusion:
     @torch.no_grad()
     def sample(self, model, image_size, batch_size=16, channels=3,return_final_img=False,classes=None,w=None):
         shape=(batch_size,channels,image_size,image_size)
-        img = torch.rand(shape)
+        img = torch.randn(shape)
         imgs = []
 
         for t in reversed(range(0, int(self.timesteps))): 
@@ -85,14 +85,13 @@ class Diffusion:
 
     def q_sample(self, x_zero, t, noise=None):
         if noise == None:
-            noise = torch.rand_like(x_zero)
-
+            noise = torch.randn_like(x_zero)
         x_t = extract(self.sqrt_alphas_cprod, t, x_zero.shape) * x_zero + extract(self.sqrt_one_minus_alphas_cprod, t, x_zero.shape) * noise
         return x_t
 
 
     def p_losses(self, denoise_model, x_zero, t, noise=None, loss_type="l1",classes=None):
-        if noise is None:
+        if noise == None:
             noise = torch.randn_like(x_zero)
         x_noise = self.q_sample(x_zero, t, noise=noise)
         pred_noise = denoise_model(x_noise, t, classes)

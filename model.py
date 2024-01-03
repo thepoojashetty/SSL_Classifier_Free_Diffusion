@@ -7,7 +7,7 @@ from functools import partial
 import torch.optim as optim
 from helpers import *
 from diffusion import *
-import config
+import local_config as config
 from torchvision.utils import make_grid
 
 class SinusoidalPositionEmbeddings(nn.Module):
@@ -194,7 +194,7 @@ class UNet(pl.LightningModule):
         self.learning_rate=learning_rate
         self.timesteps=timesteps
 
-        my_scheduler = (lambda x: cosine_beta_schedule(x))
+        my_scheduler = (lambda x: linear_beta_schedule(0.0001, 0.02, x))
         self.diffusor = Diffusion(timesteps=config.TIMESTEPS,get_noise_schedule=my_scheduler,img_size=config.IMAGE_SIZE)
 
         init_dim = default(init_dim, dim)

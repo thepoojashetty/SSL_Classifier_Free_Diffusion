@@ -9,12 +9,13 @@ from helpers import *
 
 
 if __name__=="__main__":
+    
     transform=transforms.Compose([
         transforms.ToTensor(),
         #scale values between -1 and 1
         transforms.Lambda(scale)
     ])
-    
+    """
     diff_model=UNet(
         dim=config.IMAGE_SIZE,
         channels=config.CHANNELS,
@@ -22,10 +23,10 @@ if __name__=="__main__":
         learning_rate=config.LEARNING_RATE,
         timesteps=config.TIMESTEPS
     )
-    
+    """
 
     #use pretrained model
-    #diff_model = UNet.load_from_checkpoint(config.CKPT_DIR_PATH+"/model_val_loss(val_loss=0.09)_epoch(epoch=81).ckpt")
+    diff_model = UNet.load_from_checkpoint(config.CKPT_DIR_PATH+"/model_val_loss(val_loss=0.09)_epoch(epoch=81).ckpt")
     
     dm = CifarDataModule(
                         data_dir=config.DATA_DIR,
@@ -44,10 +45,14 @@ if __name__=="__main__":
             LearningRateMonitor(logging_interval='epoch'),
             ModelCheckpoint(
                 dirpath=config.CKPT_DIR_PATH,
-                filename="model_val_loss({val_loss:.2f})_epoch({epoch})",
+                filename="model_minval_loss({val_loss:.2f})_epoch({epoch})",
                 monitor="val_loss",
                 mode="min"
             ),
+            ModelCheckpoint(
+                dirpath=config.CKPT_DIR_PATH,
+                filename="modelA_val_loss({val_loss:.2f})_epoch({epoch})",
+            )
         ]
     )
 

@@ -2,7 +2,6 @@ from torch.utils.data import DataLoader,random_split
 import pytorch_lightning as pl
 from torchvision import datasets
 from cifardataset import CifarDataset
-import config
 
 class CifarDataModule(pl.LightningDataModule):
     def __init__(self,data_dir,batch_size,num_workers,transform,p_uncond):

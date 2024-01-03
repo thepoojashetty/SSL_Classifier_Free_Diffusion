@@ -1,6 +1,10 @@
 tb_logs
 Model/Checkpoints
 Model_old/Checkpoints
+Model_cosine/Checkpoints
+Model_augmentation/Checkpoints
+tb_logs_augmentation
+tb_logs_cosine
 tb_logs_old
 data
 .vscode
